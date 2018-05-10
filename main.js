@@ -3,13 +3,8 @@ const btn = document.querySelector('#search');
 const input = document.querySelector('#inputText');
 
 btn.addEventListener('click',function(){
-    debugger;
-    console.log(input.value);
     const searchTerm = input.value;
-    let iputIsNotEmpty=handleInput(searchTerm);
-    if(iputIsNotEmpty){
-        searchHYFReps(searchTerm);
-    }
+    searchHYFReps(searchTerm);
 });
 
 function handleInput(input){
@@ -36,37 +31,29 @@ function fetchJSONData(url, callbackFn){
         console.log("Data loaded.");
         const data = JSON.parse(xhr.responseText);
         callbackFn(data);
+        console.lo("Data finished loading");
     });
     xhr.open('GET', url);
     xhr.send();
 }
 
 let searchIthemISExist=false;
-function searchHYFReps(searchTerm){
-    const url ="https://api.github.com/search/repositories?q=user:HackYourFuture+" + searchTerm;
-    const ul = document.querySelector('#reposList');
+function searchHYFReps(searchItem){
+    const url ="https://api.github.com/search/repositories?q=user:HackYourFuture+" + searchItem;
+    const ul = document.querySelector('ul#reposList');
     ul.innerHTML = '';
     fetchJSONData(url,function(searchResult){
         console.log(searchResult);
-     for(const repo of repoList){
-         if(searchTerm===repo.name)
-         {
-            searchIthemISExist=true;
-         }
-         if(searchIthemISExist)
-         {
-             searchResult.push(repo);
-         }
-     }
-     for(const repoResult of searchResult){
-        const ul=document.querySelector('#reposList');
-        const li = document.createElement('li');
-        ul.appendChild(li);    
-        li.innerHTML =`<a target="_blank" href="${repoResult.url}">${repoResult.name}</a>`;
-     }
+        renderRepositories(searchResult);
 });
 }
 
-function renderReposioties(repositories){
-    
+function renderRepositories(repositories){
+    const ul = document.querySelector('#reposList');
+    ul.innerHTML=``;
+    for (const repo of repositories){
+        const li = document.createAttribute('li');
+        ul.appendChild(li);
+        li.innerHTML =`<a target="_blank" href="${repo.url}">${repo.name}</a>`;
+    }
 }
